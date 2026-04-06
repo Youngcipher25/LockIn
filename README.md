@@ -4,24 +4,24 @@
 
 **LockIn** is a secure, privacy-first productivity application built with SwiftUI. It combines task management, calendar integration, and usage tracking with robust security features to ensure your personal data stays yours.
 
-## ✨ Key Features
+## Key Features
 
-- **🔐 Robust Security**: 
+- **Robust Security**: 
   - Mandatory biometric/PIN authentication via `AppLockView`.
   - Secure OTP-based authentication flow.
-- **📅 Smart Calendar**: 
+- **Smart Calendar**: 
   - Integrated `CalendarView` for managing schedules alongside tasks.
-- **📊 Privacy Dashboard**: 
+- **Privacy Dashboard**: 
   - Real-time tracking of app usage and privacy metrics.
-- **✅ Task Management**: 
+- **Task Management**: 
   - Efficient task creation and organization via `NewTaskView`.
-- **🌙 Modern UI/UX**: 
+- **Modern UI/UX**: 
   - Native SwiftUI implementation with support for Dark Mode.
   - Custom brand-themed components for a premium feel.
-- **💾 Data Control**: 
+- **Data Control**: 
   - Local storage management and secure data export options.
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -45,14 +45,14 @@
    - Select your target device (iPhone) in Xcode.
    - Press `Cmd + R` to build and run.
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 - **Framework**: SwiftUI
 - **Language**: Swift 5.9+
 - **Data Persistence**: `AppStorage` & custom `TaskStore` (JSON-backed or similar)
 - **Security**: LocalAuthentication (Biometrics)
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
 LockIn/
@@ -72,10 +72,10 @@ LockIn/
 └── LockIn.xcodeproj                 # Xcode Project File
 ```
 
-## 📜 License
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
 
-Designed with ❤️ for Privacy and Productivity.
+Designed with passion for Privacy and Productivity.
