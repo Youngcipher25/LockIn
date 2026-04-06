@@ -7,16 +7,44 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A20CE5ED2F5B35B100C3A9DD /* PrivateOrganizerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20CE5EC2F5B35B100C3A9DD /* PrivateOrganizerApp.swift */; };
+		A20CE5EF2F5B35B700C3A9DD /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20CE5EE2F5B35B700C3A9DD /* Models.swift */; };
+		A20CE5F12F5B370B00C3A9DD /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20CE5F02F5B370B00C3A9DD /* MainTabView.swift */; };
+		A20CE5F32F5B371200C3A9DD /* AppLockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20CE5F22F5B371200C3A9DD /* AppLockView.swift */; };
+		A20CE5F52F5B3BF900C3A9DD /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20CE5F42F5B3BEF00C3A9DD /* DashboardView.swift */; };
+		A20CE5F72F5B3C2600C3A9DD /* NewTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20CE5F62F5B3C2000C3A9DD /* NewTaskView.swift */; };
+		A20CE5F92F5B3C3700C3A9DD /* PrivacyDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20CE5F82F5B3C3000C3A9DD /* PrivacyDashboardView.swift */; };
+		A20CE5FD2F5B3C6300C3A9DD /* StorageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20CE5FC2F5B3C5C00C3A9DD /* StorageView.swift */; };
+		A20CE5FF2F5B3C7300C3A9DD /* TrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20CE5FE2F5B3C6C00C3A9DD /* TrackingView.swift */; };
+		A20CE6012F5B3C8300C3A9DD /* PermissionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20CE6002F5B3C7B00C3A9DD /* PermissionsView.swift */; };
+		A20CE6032F5B3C9100C3A9DD /* ExportDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20CE6022F5B3C9000C3A9DD /* ExportDataView.swift */; };
+		A20CE6052F5B3CA000C3A9DD /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20CE6042F5B3C9F00C3A9DD /* SettingsView.swift */; };
+		A20CE6082F5B406700C3A9DD /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20CE6072F5B406200C3A9DD /* CalendarView.swift */; };
+		A20CE60A2F5B45DC00C3A9DD /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20CE6092F5B45D700C3A9DD /* HomeView.swift */; };
+		A20CE60C2F5B462E00C3A9DD /* UIComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20CE60B2F5B462500C3A9DD /* UIComponents.swift */; };
 		A247EC522F572F8500DAB4FF /* LockInApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A247EC512F572F8500DAB4FF /* LockInApp.swift */; };
-		A247EC542F572F8500DAB4FF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A247EC532F572F8500DAB4FF /* ContentView.swift */; };
 		A247EC562F572F8600DAB4FF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A247EC552F572F8600DAB4FF /* Assets.xcassets */; };
 		A247EC592F572F8600DAB4FF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A247EC582F572F8600DAB4FF /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		A247EC4E2F572F8500DAB4FF /* LockIn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LockIn.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20CE5EC2F5B35B100C3A9DD /* PrivateOrganizerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivateOrganizerApp.swift; sourceTree = "<group>"; };
+		A20CE5EE2F5B35B700C3A9DD /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		A20CE5F02F5B370B00C3A9DD /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		A20CE5F22F5B371200C3A9DD /* AppLockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLockView.swift; sourceTree = "<group>"; };
+		A20CE5F42F5B3BEF00C3A9DD /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		A20CE5F62F5B3C2000C3A9DD /* NewTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskView.swift; sourceTree = "<group>"; };
+		A20CE5F82F5B3C3000C3A9DD /* PrivacyDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyDashboardView.swift; sourceTree = "<group>"; };
+		A20CE5FC2F5B3C5C00C3A9DD /* StorageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageView.swift; sourceTree = "<group>"; };
+		A20CE5FE2F5B3C6C00C3A9DD /* TrackingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingView.swift; sourceTree = "<group>"; };
+		A20CE6002F5B3C7B00C3A9DD /* PermissionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsView.swift; sourceTree = "<group>"; };
+		A20CE6022F5B3C9000C3A9DD /* ExportDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDataView.swift; sourceTree = "<group>"; };
+		A20CE6042F5B3C9F00C3A9DD /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A20CE6062F5B3E0A00C3A9DD /* LockIn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LockIn.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20CE6072F5B406200C3A9DD /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
+		A20CE6092F5B45D700C3A9DD /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		A20CE60B2F5B462500C3A9DD /* UIComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIComponents.swift; sourceTree = "<group>"; };
 		A247EC512F572F8500DAB4FF /* LockInApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockInApp.swift; sourceTree = "<group>"; };
-		A247EC532F572F8500DAB4FF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A247EC552F572F8600DAB4FF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A247EC582F572F8600DAB4FF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -36,25 +64,31 @@
 			isa = PBXGroup;
 			children = (
 				A247EC502F572F8500DAB4FF /* LockIn */,
-				A247EC4F2F572F8500DAB4FF /* Products */,
+				A20CE6062F5B3E0A00C3A9DD /* LockIn.app */,
 			);
-			sourceTree = "<group>";
-		};
-		A247EC4F2F572F8500DAB4FF /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				A247EC4E2F572F8500DAB4FF /* LockIn.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		A247EC502F572F8500DAB4FF /* LockIn */ = {
 			isa = PBXGroup;
 			children = (
+				A20CE60B2F5B462500C3A9DD /* UIComponents.swift */,
 				A247EC512F572F8500DAB4FF /* LockInApp.swift */,
-				A247EC532F572F8500DAB4FF /* ContentView.swift */,
 				A247EC552F572F8600DAB4FF /* Assets.xcassets */,
 				A247EC572F572F8600DAB4FF /* Preview Content */,
+				A20CE5EC2F5B35B100C3A9DD /* PrivateOrganizerApp.swift */,
+				A20CE5EE2F5B35B700C3A9DD /* Models.swift */,
+				A20CE5F02F5B370B00C3A9DD /* MainTabView.swift */,
+				A20CE6072F5B406200C3A9DD /* CalendarView.swift */,
+				A20CE5F22F5B371200C3A9DD /* AppLockView.swift */,
+				A20CE6092F5B45D700C3A9DD /* HomeView.swift */,
+				A20CE5F42F5B3BEF00C3A9DD /* DashboardView.swift */,
+				A20CE5F62F5B3C2000C3A9DD /* NewTaskView.swift */,
+				A20CE5F82F5B3C3000C3A9DD /* PrivacyDashboardView.swift */,
+				A20CE5FC2F5B3C5C00C3A9DD /* StorageView.swift */,
+				A20CE5FE2F5B3C6C00C3A9DD /* TrackingView.swift */,
+				A20CE6002F5B3C7B00C3A9DD /* PermissionsView.swift */,
+				A20CE6022F5B3C9000C3A9DD /* ExportDataView.swift */,
+				A20CE6042F5B3C9F00C3A9DD /* SettingsView.swift */,
 			);
 			path = LockIn;
 			sourceTree = "<group>";
@@ -84,7 +118,7 @@
 			);
 			name = LockIn;
 			productName = LockIn;
-			productReference = A247EC4E2F572F8500DAB4FF /* LockIn.app */;
+			productReference = A20CE6062F5B3E0A00C3A9DD /* LockIn.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -95,7 +129,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 2630;
 				TargetAttributes = {
 					A247EC4D2F572F8500DAB4FF = {
 						CreatedOnToolsVersion = 15.0.1;
@@ -111,7 +145,7 @@
 				Base,
 			);
 			mainGroup = A247EC452F572F8500DAB4FF;
-			productRefGroup = A247EC4F2F572F8500DAB4FF /* Products */;
+			productRefGroup = A247EC452F572F8500DAB4FF;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -137,8 +171,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A247EC542F572F8500DAB4FF /* ContentView.swift in Sources */,
+				A20CE6052F5B3CA000C3A9DD /* SettingsView.swift in Sources */,
+				A20CE5F52F5B3BF900C3A9DD /* DashboardView.swift in Sources */,
+				A20CE5F72F5B3C2600C3A9DD /* NewTaskView.swift in Sources */,
+				A20CE5F32F5B371200C3A9DD /* AppLockView.swift in Sources */,
+				A20CE5FD2F5B3C6300C3A9DD /* StorageView.swift in Sources */,
+				A20CE6082F5B406700C3A9DD /* CalendarView.swift in Sources */,
+				A20CE5ED2F5B35B100C3A9DD /* PrivateOrganizerApp.swift in Sources */,
+				A20CE5FF2F5B3C7300C3A9DD /* TrackingView.swift in Sources */,
 				A247EC522F572F8500DAB4FF /* LockInApp.swift in Sources */,
+				A20CE60C2F5B462E00C3A9DD /* UIComponents.swift in Sources */,
+				A20CE5EF2F5B35B700C3A9DD /* Models.swift in Sources */,
+				A20CE6012F5B3C8300C3A9DD /* PermissionsView.swift in Sources */,
+				A20CE5F92F5B3C3700C3A9DD /* PrivacyDashboardView.swift in Sources */,
+				A20CE60A2F5B45DC00C3A9DD /* HomeView.swift in Sources */,
+				A20CE6032F5B3C9100C3A9DD /* ExportDataView.swift in Sources */,
+				A20CE5F12F5B370B00C3A9DD /* MainTabView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -180,6 +228,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = C82BWJ6PS8;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -203,6 +252,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -243,6 +293,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = C82BWJ6PS8;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -259,6 +310,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -272,7 +324,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"LockIn/Preview Content\"";
-				DEVELOPMENT_TEAM = C82BWJ6PS8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -301,7 +352,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"LockIn/Preview Content\"";
-				DEVELOPMENT_TEAM = C82BWJ6PS8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
