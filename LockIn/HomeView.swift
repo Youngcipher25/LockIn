@@ -149,6 +149,7 @@ struct HomeView: View {
             Button {
                 withAnimation(.spring()) {
                     isPrivacyModeEnabled.toggle()
+                    NotificationManager.shared.updateAllNotifications(tasks: taskStore.tasks)
                 }
                 HapticManager.impact(.rigid)
             } label: {

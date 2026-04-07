@@ -44,7 +44,14 @@ struct PrivacyDashboardView: View {
                                 .multilineTextAlignment(.center)
                         }
                         
-                        Toggle("", isOn: $isPrivacyModeEnabled.animation(.spring()))
+                        Toggle("", isOn: .init(get: {
+                            isPrivacyModeEnabled
+                        }, set: { newValue in
+                            withAnimation(.spring()) {
+                                isPrivacyModeEnabled = newValue
+                                NotificationManager.shared.updateAllNotifications(tasks: taskStore.tasks)
+                            }
+                        }))
                             .labelsHidden()
                             .toggleStyle(SwitchToggleStyle(tint: Brand.primary))
                             .scaleEffect(1.1)

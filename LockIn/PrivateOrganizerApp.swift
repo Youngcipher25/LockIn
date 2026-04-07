@@ -10,6 +10,9 @@ struct PrivateOrganizerApp: App {
             AppRootView()
                 .environmentObject(taskStore)
                 .preferredColorScheme(isDarkMode ? .dark : .light)
+                .onAppear {
+                    NotificationManager.shared.requestAuthorization()
+                }
         }
     }
 }

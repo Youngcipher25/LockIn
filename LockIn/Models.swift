@@ -92,12 +92,16 @@ final class TaskStore: ObservableObject {
 }
 
 // MARK: - Notification Management
-final class NotificationManager {
+final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
     static let shared = NotificationManager()
     
-    private init() {}
+    private override init() {
+        super.init()
+        UNUserNotificationCenter.current().delegate = self
+    }
     
     @AppStorage("hideNotificationDetails") private var hideNotificationDetails = true
+    @AppStorage("isPrivacyModeEnabled") private var privacyModeEnabled = false
     
     func requestAuthorization() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
@@ -121,8 +125,8 @@ final class NotificationManager {
         
         let content = UNMutableNotificationContent()
         
-        // Privacy Logic: Mask content if task is private AND privacy setting is on
-        if task.isPrivate && hideNotificationDetails {
+        // Privacy Logic: Mask content if task is private AND (privacy mode is on OR conceal setting is on)
+        if task.isPrivate && (privacyModeEnabled || hideNotificationDetails) {
             content.title = "🔒 Private Task"
             content.body = "You have a protected reminder."
         } else {
@@ -145,6 +149,8 @@ final class NotificationManager {
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
                 print("Error scheduling notification: \(error.localizedDescription)")
+            } else {
+                print("Successfully scheduled: \(task.title)")
             }
         }
     }
@@ -159,4 +165,21 @@ final class NotificationManager {
             scheduleNotification(for: task)
         }
     }
+    
+    // MARK: - UNUserNotificationCenterDelegate
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, 
+                              willPresent notification: UNNotification, 
+                              withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        // Allow notifications while the app is in the foreground
+        completionHandler([.banner, .list, .sound, .badge])
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, 
+                              didReceive response: UNNotificationResponse, 
+                              withCompletionHandler completionHandler: @escaping () -> Void) {
+        // Handle notification tap
+        completionHandler()
+    }
 }
+
