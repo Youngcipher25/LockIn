@@ -103,42 +103,45 @@ private struct CalendarTaskRow: View {
     }
 
     var body: some View {
-        HStack(spacing: 12) {
-            Button(action: onToggle) {
-                Image(systemName: task.completed ? "checkmark.circle.fill" : "circle")
-                    .foregroundColor(task.completed ? .green : .secondary)
-            }
-            .buttonStyle(.plain)
-            
-            VStack(alignment: .leading, spacing: 2) {
-                HStack(spacing: 4) {
-                    if task.isPrivate {
-                        Image(systemName: "lock.fill")
-                            .font(.caption2)
-                            .foregroundColor(Brand.privacy)
+        NavigationLink(destination: TaskDetailView(taskItem: task)) {
+            HStack(spacing: 12) {
+                Button(action: onToggle) {
+                    Image(systemName: task.completed ? "checkmark.circle.fill" : "circle")
+                        .foregroundColor(task.completed ? .green : .secondary)
+                }
+                .buttonStyle(.plain)
+                
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack(spacing: 4) {
+                        if task.isPrivate {
+                            Image(systemName: "lock.fill")
+                                .font(.caption2)
+                                .foregroundColor(Brand.privacy)
+                        }
+                        Text(showPlaceholder ? "🔒 Private Task" : task.title)
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .strikethrough(task.completed)
+                            .foregroundColor(task.completed ? .secondary : .primary)
+                            .blur(radius: (task.isPrivate && isPrivacyMode && !hidePrivateTitles) ? 4 : 0)
                     }
-                    Text(showPlaceholder ? "🔒 Private Task" : task.title)
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                        .strikethrough(task.completed)
-                        .foregroundColor(task.completed ? .secondary : .primary)
-                        .blur(radius: (task.isPrivate && isPrivacyMode && !hidePrivateTitles) ? 4 : 0)
+                    
+                    Text(task.date.formatted(date: .omitted, time: .shortened))
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
                 }
                 
-                Text(task.date.formatted(date: .omitted, time: .shortened))
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+                Spacer()
             }
-            
-            Spacer()
+            .padding(12)
+            .background(Brand.secondarySystemGroupedBackground)
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .stroke(Color.primary.opacity(0.05), lineWidth: 0.5)
+            )
         }
-        .padding(12)
-        .background(Brand.secondarySystemGroupedBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .stroke(Color.primary.opacity(0.05), lineWidth: 0.5)
-        )
+        .buttonStyle(.plain)
     }
 }
 

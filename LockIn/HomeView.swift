@@ -345,55 +345,59 @@ private struct TaskCardView: View {
     }
 
     var body: some View {
-        LockInCard {
-            HStack(spacing: 16) {
-                Button(action: onToggle) {
-                    Image(systemName: task.completed ? "checkmark.circle.fill" : "circle")
-                        .font(.title2)
-                        .foregroundStyle(task.completed ? .green : .secondary)
-                }
-                .buttonStyle(.plain)
+        NavigationLink(destination: TaskDetailView(taskItem: task)) {
+            LockInCard {
+                HStack(spacing: 16) {
+                    Button(action: onToggle) {
+                        Image(systemName: task.completed ? "checkmark.circle.fill" : "circle")
+                            .font(.title2)
+                            .foregroundStyle(task.completed ? .green : .secondary)
+                    }
+                    .buttonStyle(.plain)
 
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack(spacing: 6) {
-                        if task.isPrivate {
-                            Image(systemName: "lock.fill")
-                                .font(.caption2)
-                                .foregroundColor(Brand.privacy)
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack(spacing: 6) {
+                            if task.isPrivate {
+                                Image(systemName: "lock.fill")
+                                    .font(.caption2)
+                                    .foregroundColor(Brand.privacy)
+                            }
+                            
+                            Text(task.title)
+                                .font(.body)
+                                .fontWeight(.semibold)
+                                .strikethrough(task.completed, color: .secondary)
+                                .foregroundStyle(task.completed ? .secondary : .primary)
                         }
-                        
-                        Text(task.title)
-                            .font(.body)
-                            .fontWeight(.semibold)
-                            .strikethrough(task.completed, color: .secondary)
-                            .foregroundStyle(task.completed ? .secondary : .primary)
-                    }
 
-                    HStack(spacing: 6) {
-                        Image(systemName: "calendar")
-                            .font(.caption2)
-                        Text(task.date.formatted(date: .abbreviated, time: .shortened))
-                            .font(.caption)
-                    }
-                    .foregroundStyle(.secondary)
-                }
-
-                Spacer()
-
-                Menu {
-                    Button(role: .destructive, action: onDelete) {
-                        Label("Delete", systemImage: "trash")
-                    }
-                } label: {
-                    Image(systemName: "ellipsis")
-                        .font(.body)
+                        HStack(spacing: 6) {
+                            Image(systemName: "calendar")
+                                .font(.caption2)
+                            Text(task.date.formatted(date: .abbreviated, time: .shortened))
+                                .font(.caption)
+                        }
                         .foregroundStyle(.secondary)
-                        .frame(width: 32, height: 32)
-                        .background(Color.primary.opacity(0.05))
-                        .clipShape(Circle())
+                    }
+
+                    Spacer()
+
+                    Menu {
+                        Button(role: .destructive, action: onDelete) {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis")
+                            .font(.body)
+                            .foregroundStyle(.secondary)
+                            .frame(width: 32, height: 32)
+                            .background(Color.primary.opacity(0.05))
+                            .clipShape(Circle())
+                    }
+                    .buttonStyle(.plain)
                 }
             }
         }
+        .buttonStyle(.plain)
     }
 }
 

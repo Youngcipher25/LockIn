@@ -25,6 +25,7 @@
 		A247EC522F572F8500DAB4FF /* LockInApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A247EC512F572F8500DAB4FF /* LockInApp.swift */; };
 		A247EC562F572F8600DAB4FF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A247EC552F572F8600DAB4FF /* Assets.xcassets */; };
 		A247EC592F572F8600DAB4FF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A247EC582F572F8600DAB4FF /* Preview Assets.xcassets */; };
+		A2AB095F2F84DB6400A858B1 /* TaskDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2AB095E2F84DB6400A858B1 /* TaskDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +48,7 @@
 		A247EC512F572F8500DAB4FF /* LockInApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockInApp.swift; sourceTree = "<group>"; };
 		A247EC552F572F8600DAB4FF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A247EC582F572F8600DAB4FF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		A2AB095E2F84DB6400A858B1 /* TaskDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +91,7 @@
 				A20CE6002F5B3C7B00C3A9DD /* PermissionsView.swift */,
 				A20CE6022F5B3C9000C3A9DD /* ExportDataView.swift */,
 				A20CE6042F5B3C9F00C3A9DD /* SettingsView.swift */,
+				A2AB095E2F84DB6400A858B1 /* TaskDetailView.swift */,
 			);
 			path = LockIn;
 			sourceTree = "<group>";
@@ -179,6 +182,7 @@
 				A20CE6082F5B406700C3A9DD /* CalendarView.swift in Sources */,
 				A20CE5ED2F5B35B100C3A9DD /* PrivateOrganizerApp.swift in Sources */,
 				A20CE5FF2F5B3C7300C3A9DD /* TrackingView.swift in Sources */,
+				A2AB095F2F84DB6400A858B1 /* TaskDetailView.swift in Sources */,
 				A247EC522F572F8500DAB4FF /* LockInApp.swift in Sources */,
 				A20CE60C2F5B462E00C3A9DD /* UIComponents.swift in Sources */,
 				A20CE5EF2F5B35B700C3A9DD /* Models.swift in Sources */,
