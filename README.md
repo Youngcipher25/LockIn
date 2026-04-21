@@ -1,81 +1,89 @@
 # LockIn - Private Organizer & Productivity Dashboard
 
-![LockIn Logo](https://img.shields.io/badge/LockIn-Private_Productivity-blue?style=for-the-badge&logo=swift)
-
-**LockIn** is a secure, privacy-first productivity application built with SwiftUI. It combines task management, calendar integration, and usage tracking with robust security features to ensure your personal data stays yours.
+**LockIn** is a secure, privacy-first productivity application built with SwiftUI. It combines task management, calendar integration, and usage tracking with professional-grade security features to ensure your personal data remains confidential and accessible across your devices.
 
 ## Key Features
 
-- **Robust Security**: 
-  - Mandatory biometric/PIN authentication via `AppLockView`.
-  - Secure OTP-based authentication flow.
-- **Smart Calendar**: 
-  - Integrated `CalendarView` for managing schedules alongside tasks.
-- **Privacy Dashboard**: 
-  - Real-time tracking of app usage and privacy metrics.
-- **Task Management**: 
-  - Efficient task creation and organization via `NewTaskView`.
-- **Modern UI/UX**: 
-  - Native SwiftUI implementation with support for Dark Mode.
-  - Custom brand-themed components for a premium feel.
-- **Data Control**: 
-  - Local storage management and secure data export options.
+- **Biometric Privacy Protection**
+  - Native integration with Face ID and Touch ID for secure content gating.
+  - Automatic blurring of sensitive tasks and metadata when the app is locked.
+  - Configurable auto-lock timers to maintain security during inactive periods.
+
+- **Cloud Synchronization (Supabase)**
+  - Permanent Account Sync: Securely backup and sync your tasks across multiple devices using a personal account.
+  - Quick Transfer: Move your data between devices without an account using a temporary 6-digit transfer code.
+  - Cross-Device Continuity: Seamlessly transition your productivity workflow between iPhone and iPad.
+
+- **Smart Data Management**
+  - Offline-First: All data is stored locally by default to ensure maximum privacy and speed.
+  - Backup & Restore: Export your entire database to a JSON file and restore it on any device.
+  - Cloud Sovereignty: Full control to delete all cloud-stored data while preserving your local records.
+
+- **Modern UI/UX**
+  - Native SwiftUI implementation optimized for iOS 17.
+  - Integrated CalendarView for managing schedules alongside tasks.
+  - Privacy Dashboard for real-time tracking of security metrics and app usage.
 
 ## Getting Started
 
 ### Prerequisites
 
-- **macOS** with **Xcode 15.0+** installed.
-- **iOS 17.0+** target device or simulator.
+- macOS with Xcode 15.0 or newer.
+- iOS 17.0 or newer for target devices or simulators.
+- A Supabase project (for Cloud Sync features).
 
 ### Installation
 
-1. **Clone the repository**:
+1. Clone the repository:
    ```bash
    git clone https://github.com/Youngcipher25/LockIn.git
    cd LockIn
    ```
 
-2. **Open the project**:
+2. Open the project:
    ```bash
    open LockIn.xcodeproj
    ```
 
-3. **Build and Run**:
-   - Select your target device (iPhone) in Xcode.
-   - Press `Cmd + R` to build and run.
+3. Configure Supabase:
+   - Update `SupabaseSyncManager.swift` with your Supabase URL and Anon Key.
+   - Run the provided SQL setup script in your Supabase SQL Editor to initialize the database tables.
+
+4. Build and Run:
+   - Select your target device in Xcode.
+   - Press Cmd + R to build and run.
 
 ## Technology Stack
 
 - **Framework**: SwiftUI
-- **Language**: Swift 5.9+
-- **Data Persistence**: `AppStorage` & custom `TaskStore` (JSON-backed or similar)
-- **Security**: LocalAuthentication (Biometrics)
+- **Database**: Local JSON storage with Supabase Cloud Integration.
+- **Security**: LocalAuthentication (Face ID/Touch ID).
+- **Networking**: Supabase Swift SDK.
 
 ## Project Structure
 
 ```text
 LockIn/
 ├── LockIn/
-│   ├── App/
-│   │   ├── LockInApp.swift          # App Entry Point
-│   │   └── PrivateOrganizerApp.swift # Core App Logic & Auth Views
+│   ├── PrivateOrganizerApp.swift  # Main Entry Point with Environment Objects
+│   ├── SupabaseSyncManager.swift # Cloud Sync & Auth Logic
+│   ├── BiometricAuthManager.swift # LocalAuthentication & Gating Logic
 │   ├── Views/
-│   │   ├── HomeView.swift           # Main Dashboard
-│   │   ├── CalendarView.swift       # Schedule Management
-│   │   ├── PrivacyDashboardView.swift # Security Metrics
-│   │   └── AppLockView.swift        # Authentication UI
+│   │   ├── HomeView.swift         # Dynamic Dashboard with Blur Gating
+│   │   ├── SyncView.swift         # Cloud Sync & Transfer UI
+│   │   ├── ExportDataView.swift   # JSON Backup & Restore Management
+│   │   ├── PrivacyDashboardView.swift # Security & Usage Stats
+│   │   └── CalendarView.swift     # Integrated Schedule Management
 │   ├── Models/
-│   │   └── Models.swift             # Task & User Data Models
+│   │   └── Models.swift           # Task & Core Data Models
 │   └── Components/
-│       └── UIComponents.swift       # Reusable Styled Components
-└── LockIn.xcodeproj                 # Xcode Project File
+│       └── UIComponents.swift     # Premium Design System
 ```
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License.
 
 ---
 
-Designed with passion for Privacy and Productivity.
+Built for individuals who value privacy as much as productivity.
