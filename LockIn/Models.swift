@@ -2,12 +2,83 @@ import Foundation
 import SwiftUI
 import UserNotifications
 
+// MARK: - Priority Enum (Architecture Doc §2.2)
+enum Priority: String, Codable, CaseIterable, Comparable {
+    case low
+    case medium
+    case high
+    
+    var displayLabel: String {
+        rawValue.capitalized
+    }
+    
+    var color: Color {
+        switch self {
+        case .low: return .green
+        case .medium: return .orange
+        case .high: return .red
+        }
+    }
+    
+    var icon: String {
+        switch self {
+        case .low: return "arrow.down.circle.fill"
+        case .medium: return "minus.circle.fill"
+        case .high: return "exclamationmark.circle.fill"
+        }
+    }
+    
+    private var sortOrder: Int {
+        switch self {
+        case .low: return 1
+        case .medium: return 2
+        case .high: return 3
+        }
+    }
+    
+    static func < (lhs: Priority, rhs: Priority) -> Bool {
+        lhs.sortOrder < rhs.sortOrder
+    }
+}
+
+// MARK: - TaskItem Model (Architecture Doc §2.2)
 struct TaskItem: Identifiable, Hashable, Codable {
     var id: UUID = UUID()
     var title: String
     var date: Date
-    var completed: Bool
+    var priority: Priority = .medium
+    var notes: String? = nil
+    var completed: Bool = false
+    var createdAt: Date = Date()
     var isPrivate: Bool = false
+    
+    // Backward-compatible decoding: old tasks without priority/notes/createdAt still load
+    enum CodingKeys: String, CodingKey {
+        case id, title, date, priority, notes, completed, createdAt, isPrivate
+    }
+    
+    init(id: UUID = UUID(), title: String, date: Date, priority: Priority = .medium, notes: String? = nil, completed: Bool = false, createdAt: Date = Date(), isPrivate: Bool = false) {
+        self.id = id
+        self.title = title
+        self.date = date
+        self.priority = priority
+        self.notes = notes
+        self.completed = completed
+        self.createdAt = createdAt
+        self.isPrivate = isPrivate
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
+        title = try container.decode(String.self, forKey: .title)
+        date = try container.decode(Date.self, forKey: .date)
+        priority = try container.decodeIfPresent(Priority.self, forKey: .priority) ?? .medium
+        notes = try container.decodeIfPresent(String.self, forKey: .notes)
+        completed = try container.decodeIfPresent(Bool.self, forKey: .completed) ?? false
+        createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt) ?? Date()
+        isPrivate = try container.decodeIfPresent(Bool.self, forKey: .isPrivate) ?? false
+    }
 }
 
 final class TaskStore: ObservableObject {
@@ -88,6 +159,37 @@ final class TaskStore: ObservableObject {
                 print("Migration failed: \(error.localizedDescription)")
             }
         }
+    }
+    
+    // MARK: - Storage Metrics (Dynamic)
+    
+    /// Returns the size of the task data file in bytes
+    var dataFileSize: Int64 {
+        guard FileManager.default.fileExists(atPath: storageURL.path) else { return 0 }
+        do {
+            let attributes = try FileManager.default.attributesOfItem(atPath: storageURL.path)
+            return attributes[.size] as? Int64 ?? 0
+        } catch {
+            return 0
+        }
+    }
+    
+    /// Returns the total size of all files in the app's Documents directory
+    var totalDocumentsSize: Int64 {
+        let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        return folderSize(at: documentsPath)
+    }
+    
+    private func folderSize(at url: URL) -> Int64 {
+        let fm = FileManager.default
+        guard let enumerator = fm.enumerator(at: url, includingPropertiesForKeys: [.fileSizeKey], options: [.skipsHiddenFiles]) else { return 0 }
+        var total: Int64 = 0
+        for case let fileURL as URL in enumerator {
+            if let size = try? fileURL.resourceValues(forKeys: [.fileSizeKey]).fileSize {
+                total += Int64(size)
+            }
+        }
+        return total
     }
 }
 
@@ -182,4 +284,3 @@ final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
         completionHandler()
     }
 }
-

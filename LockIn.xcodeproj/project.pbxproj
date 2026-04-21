@@ -25,7 +25,12 @@
 		A247EC522F572F8500DAB4FF /* LockInApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A247EC512F572F8500DAB4FF /* LockInApp.swift */; };
 		A247EC562F572F8600DAB4FF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A247EC552F572F8600DAB4FF /* Assets.xcassets */; };
 		A247EC592F572F8600DAB4FF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A247EC582F572F8600DAB4FF /* Preview Assets.xcassets */; };
+		A2629ECF2F8F628900C3DE30 /* SyncView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2629ECE2F8F628900C3DE30 /* SyncView.swift */; };
+		A27E71D32F876B1800C9CB01 /* SupabaseSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A27E71D22F876B1800C9CB01 /* SupabaseSyncManager.swift */; };
 		A2AB095F2F84DB6400A858B1 /* TaskDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2AB095E2F84DB6400A858B1 /* TaskDetailView.swift */; };
+		B1000001300000000000AAAA /* BiometricAuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002300000000000AAAA /* BiometricAuthManager.swift */; };
+		C1000003300000000000BBBB /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = C1000002300000000000BBBB /* Supabase */; };
+		D1000001300000000000CCCC /* supabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1000002300000000000CCCC /* supabase.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,7 +53,11 @@
 		A247EC512F572F8500DAB4FF /* LockInApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockInApp.swift; sourceTree = "<group>"; };
 		A247EC552F572F8600DAB4FF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A247EC582F572F8600DAB4FF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		A2629ECE2F8F628900C3DE30 /* SyncView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncView.swift; sourceTree = "<group>"; };
+		A27E71D22F876B1800C9CB01 /* SupabaseSyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseSyncManager.swift; sourceTree = "<group>"; };
 		A2AB095E2F84DB6400A858B1 /* TaskDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetailView.swift; sourceTree = "<group>"; };
+		B1000002300000000000AAAA /* BiometricAuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricAuthManager.swift; sourceTree = "<group>"; };
+		D1000002300000000000CCCC /* supabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = supabase.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +65,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C1000003300000000000BBBB /* Supabase in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -92,6 +102,10 @@
 				A20CE6022F5B3C9000C3A9DD /* ExportDataView.swift */,
 				A20CE6042F5B3C9F00C3A9DD /* SettingsView.swift */,
 				A2AB095E2F84DB6400A858B1 /* TaskDetailView.swift */,
+				A2629ECE2F8F628900C3DE30 /* SyncView.swift */,
+				A27E71D22F876B1800C9CB01 /* SupabaseSyncManager.swift */,
+				B1000002300000000000AAAA /* BiometricAuthManager.swift */,
+				D1000002300000000000CCCC /* supabase.swift */,
 			);
 			path = LockIn;
 			sourceTree = "<group>";
@@ -120,6 +134,9 @@
 			dependencies = (
 			);
 			name = LockIn;
+			packageProductDependencies = (
+				C1000002300000000000BBBB /* Supabase */,
+			);
 			productName = LockIn;
 			productReference = A20CE6062F5B3E0A00C3A9DD /* LockIn.app */;
 			productType = "com.apple.product-type.application";
@@ -132,7 +149,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 2630;
+				LastUpgradeCheck = 2640;
 				TargetAttributes = {
 					A247EC4D2F572F8500DAB4FF = {
 						CreatedOnToolsVersion = 15.0.1;
@@ -151,6 +168,9 @@
 			productRefGroup = A247EC452F572F8500DAB4FF;
 			projectDirPath = "";
 			projectRoot = "";
+			packageReferences = (
+				C1000001300000000000BBBB /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
 			targets = (
 				A247EC4D2F572F8500DAB4FF /* LockIn */,
 			);
@@ -179,6 +199,7 @@
 				A20CE5F72F5B3C2600C3A9DD /* NewTaskView.swift in Sources */,
 				A20CE5F32F5B371200C3A9DD /* AppLockView.swift in Sources */,
 				A20CE5FD2F5B3C6300C3A9DD /* StorageView.swift in Sources */,
+				A2629ECF2F8F628900C3DE30 /* SyncView.swift in Sources */,
 				A20CE6082F5B406700C3A9DD /* CalendarView.swift in Sources */,
 				A20CE5ED2F5B35B100C3A9DD /* PrivateOrganizerApp.swift in Sources */,
 				A20CE5FF2F5B3C7300C3A9DD /* TrackingView.swift in Sources */,
@@ -191,6 +212,9 @@
 				A20CE60A2F5B45DC00C3A9DD /* HomeView.swift in Sources */,
 				A20CE6032F5B3C9100C3A9DD /* ExportDataView.swift in Sources */,
 				A20CE5F12F5B370B00C3A9DD /* MainTabView.swift in Sources */,
+				A27E71D32F876B1800C9CB01 /* SupabaseSyncManager.swift in Sources */,
+				B1000001300000000000AAAA /* BiometricAuthManager.swift in Sources */,
+				D1000001300000000000CCCC /* supabase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -333,6 +357,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "We use Face ID to securely unlock your private tasks.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -361,6 +386,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "We use Face ID to securely unlock your private tasks.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -398,6 +424,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		C1000001300000000000BBBB /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase-community/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C1000002300000000000BBBB /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C1000001300000000000BBBB /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A247EC462F572F8500DAB4FF /* Project object */;
 }

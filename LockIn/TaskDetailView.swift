@@ -2,6 +2,7 @@ import SwiftUI
 
 struct TaskDetailView: View {
     @EnvironmentObject var taskStore: TaskStore
+    @EnvironmentObject var bioAuth: BiometricAuthManager
     @Environment(\.dismiss) var dismiss
     
     @State var taskItem: TaskItem
@@ -19,7 +20,12 @@ struct TaskDetailView: View {
     // Form States
     @State private var editedTitle: String = ""
     @State private var editedDate: Date = Date()
+    @State private var editedPriority: Priority = .medium
+    @State private var editedNotes: String = ""
     @State private var editedIsPrivate: Bool = false
+    @State private var showValidationError = false
+    
+    private let titleCharLimit = 200
     
     var body: some View {
         ZStack {
@@ -52,6 +58,8 @@ struct TaskDetailView: View {
     private func setupInitialState() {
         editedTitle = taskItem.title
         editedDate = taskItem.date
+        editedPriority = taskItem.priority
+        editedNotes = taskItem.notes ?? ""
         editedIsPrivate = taskItem.isPrivate
     }
     
@@ -86,6 +94,9 @@ struct TaskDetailView: View {
                 withAnimation(.spring()) {
                     isEditing.toggle()
                 }
+                if isEditing {
+                    setupInitialState()
+                }
             } label: {
                 Text(isEditing ? "Save" : "Edit")
                     .fontWeight(.bold)
@@ -107,6 +118,7 @@ struct TaskDetailView: View {
     // MARK: - View Mode
     private var viewSection: some View {
         VStack(spacing: 20) {
+            // Title & Priority Card
             LockInCard {
                 VStack(alignment: .leading, spacing: 16) {
                     HStack {
@@ -132,19 +144,60 @@ struct TaskDetailView: View {
                     
                     Divider()
                     
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Scheduled For")
+                    // Priority
+                    HStack(spacing: 12) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Priority")
+                                .font(.caption)
+                                .fontWeight(.bold)
+                                .foregroundStyle(.secondary)
+                                .textCase(.uppercase)
+                            
+                            HStack(spacing: 6) {
+                                Image(systemName: taskItem.priority.icon)
+                                    .foregroundColor(taskItem.priority.color)
+                                Text(taskItem.priority.displayLabel)
+                                    .font(.headline)
+                                    .foregroundColor(taskItem.priority.color)
+                            }
+                        }
+                        
+                        Spacer()
+                        
+                        VStack(alignment: .trailing, spacing: 4) {
+                            Text("Scheduled For")
+                                .font(.caption)
+                                .fontWeight(.bold)
+                                .foregroundStyle(.secondary)
+                                .textCase(.uppercase)
+                            
+                            Text(taskItem.isPrivate && isPrivacyModeEnabled ? "Protected Time" : taskItem.date.formatted(date: .abbreviated, time: .shortened))
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                        }
+                    }
+                }
+            }
+            
+            // Notes Card
+            if let notes = taskItem.notes, !notes.isEmpty {
+                LockInCard {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Notes")
                             .font(.caption)
                             .fontWeight(.bold)
                             .foregroundStyle(.secondary)
                             .textCase(.uppercase)
                         
-                        Text(taskItem.isPrivate && isPrivacyModeEnabled ? "Protected Time" : taskItem.date.formatted(date: .complete, time: .shortened))
-                            .font(.headline)
+                        Text(taskItem.isPrivate && isPrivacyModeEnabled ? "Protected content" : notes)
+                            .font(.body)
+                            .foregroundColor(.primary)
+                            .blur(radius: (taskItem.isPrivate && isPrivacyModeEnabled) ? 4 : 0)
                     }
                 }
             }
             
+            // Status Card
             LockInCard {
                 HStack(spacing: 16) {
                     Circle()
@@ -176,26 +229,106 @@ struct TaskDetailView: View {
                     }
                 }
             }
+            
+            // Created At
+            HStack {
+                Image(systemName: "clock")
+                    .font(.caption2)
+                Text("Created \(taskItem.createdAt.formatted(date: .abbreviated, time: .shortened))")
+                    .font(.caption)
+            }
+            .foregroundStyle(.secondary)
         }
     }
     
     // MARK: - Edit Mode
     private var editSection: some View {
         VStack(spacing: 20) {
+            // Title
             LockInCard {
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("Update Title")
+                    HStack {
+                        Text("Update Title")
+                            .font(.caption)
+                            .fontWeight(.bold)
+                            .foregroundStyle(.secondary)
+                            .textCase(.uppercase)
+                        
+                        Spacer()
+                        
+                        Text("\(editedTitle.count)/\(titleCharLimit)")
+                            .font(.caption2)
+                            .fontWeight(.bold)
+                            .foregroundColor(editedTitle.count > titleCharLimit ? .red : .secondary)
+                    }
+                    
+                    TextField("Task title", text: $editedTitle)
+                        .font(.title3)
+                        .fontWeight(.medium)
+                        .onChange(of: editedTitle) { oldValue, newValue in
+                            if newValue.count > titleCharLimit {
+                                editedTitle = String(newValue.prefix(titleCharLimit))
+                            }
+                            if showValidationError && !editedTitle.isEmpty {
+                                showValidationError = false
+                            }
+                        }
+                    
+                    if showValidationError {
+                        HStack(spacing: 4) {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .font(.caption2)
+                            Text("Task title cannot be empty.")
+                                .font(.caption)
+                        }
+                        .foregroundColor(.red)
+                    }
+                }
+            }
+            
+            // Priority
+            LockInCard {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Priority")
                         .font(.caption)
                         .fontWeight(.bold)
                         .foregroundStyle(.secondary)
                         .textCase(.uppercase)
                     
-                    TextField("Task title", text: $editedTitle)
-                        .font(.title3)
-                        .fontWeight(.medium)
+                    HStack(spacing: 8) {
+                        ForEach(Priority.allCases, id: \.self) { level in
+                            Button {
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                    editedPriority = level
+                                }
+                                HapticManager.impact(.light)
+                            } label: {
+                                HStack(spacing: 6) {
+                                    Image(systemName: level.icon)
+                                        .font(.caption)
+                                    Text(level.displayLabel)
+                                        .font(.subheadline)
+                                        .fontWeight(.semibold)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 10)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                        .fill(editedPriority == level ? level.color.opacity(0.15) : Color.clear)
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                        .stroke(editedPriority == level ? level.color : Color.primary.opacity(0.08), lineWidth: editedPriority == level ? 1.5 : 1)
+                                )
+                                .foregroundColor(editedPriority == level ? level.color : .secondary)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
                 }
             }
             
+            // Date & Privacy
             LockInCard {
                 VStack(spacing: 16) {
                     DatePicker(selection: $editedDate) {
@@ -210,6 +343,31 @@ struct TaskDetailView: View {
                             .fontWeight(.medium)
                     }
                     .tint(Brand.privacy)
+                }
+            }
+            
+            // Notes
+            LockInCard {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Notes")
+                        .font(.caption)
+                        .fontWeight(.bold)
+                        .foregroundStyle(.secondary)
+                        .textCase(.uppercase)
+                    
+                    ZStack(alignment: .topLeading) {
+                        if editedNotes.isEmpty {
+                            Text("Add any extra details or reminders…")
+                                .font(.body)
+                                .foregroundColor(.secondary.opacity(0.5))
+                                .padding(.top, 8)
+                                .padding(.leading, 4)
+                        }
+                        TextEditor(text: $editedNotes)
+                            .font(.body)
+                            .frame(minHeight: 80, maxHeight: 150)
+                            .scrollContentBackground(.hidden)
+                    }
                 }
             }
         }
@@ -240,9 +398,20 @@ struct TaskDetailView: View {
     }
     
     private func saveChanges() {
+        // Validation (Functional Doc §5.2)
+        guard !editedTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            withAnimation(.spring()) {
+                showValidationError = true
+            }
+            HapticManager.notification(.error)
+            return
+        }
+        
         var updatedTask = taskItem
-        updatedTask.title = editedTitle
+        updatedTask.title = editedTitle.trimmingCharacters(in: .whitespacesAndNewlines)
         updatedTask.date = editedDate
+        updatedTask.priority = editedPriority
+        updatedTask.notes = editedNotes.isEmpty ? nil : editedNotes
         updatedTask.isPrivate = editedIsPrivate
         
         withAnimation {
@@ -254,7 +423,8 @@ struct TaskDetailView: View {
 
 #Preview {
     NavigationStack {
-        TaskDetailView(taskItem: TaskItem(title: "Preview Task", date: Date(), completed: false))
+        TaskDetailView(taskItem: TaskItem(title: "Preview Task", date: Date(), priority: .high, notes: "Some important notes here", completed: false))
             .environmentObject(TaskStore())
+            .environmentObject(BiometricAuthManager.shared)
     }
 }

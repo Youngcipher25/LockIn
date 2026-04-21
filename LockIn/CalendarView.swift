@@ -2,10 +2,10 @@ import SwiftUI
 
 struct CalendarView: View {
     @EnvironmentObject var taskStore: TaskStore
+    @EnvironmentObject var bioAuth: BiometricAuthManager
     @State private var selectedDate = Date()
     
     @AppStorage("isPrivacyModeEnabled") private var isPrivacyModeEnabled = false
-    @AppStorage("hidePrivateTaskTitles") private var hidePrivateTaskTitles = true
 
     var tasksForSelectedDate: [TaskItem] {
         taskStore.tasks.filter {
@@ -72,11 +72,17 @@ struct CalendarView: View {
                             ForEach(tasksForSelectedDate) { task in
                                 CalendarTaskRow(
                                     task: task,
-                                    isPrivacyMode: isPrivacyModeEnabled,
-                                    hidePrivateTitles: hidePrivateTaskTitles,
+                                    isBlurred: bioAuth.shouldBlurTask(task),
                                     onToggle: {
+                                        if bioAuth.shouldBlurTask(task) {
+                                            bioAuth.authenticate { _ in }
+                                            return
+                                        }
                                         HapticManager.impact(.light)
                                         withAnimation { taskStore.toggle(task) }
+                                    },
+                                    onTapBlurred: {
+                                        bioAuth.authenticate { _ in }
                                     }
                                 )
                             }
@@ -94,59 +100,101 @@ struct CalendarView: View {
 
 private struct CalendarTaskRow: View {
     let task: TaskItem
-    let isPrivacyMode: Bool
-    let hidePrivateTitles: Bool
+    let isBlurred: Bool
     let onToggle: () -> Void
-    
-    var showPlaceholder: Bool {
-        task.isPrivate && (isPrivacyMode || hidePrivateTitles)
-    }
+    let onTapBlurred: () -> Void
 
     var body: some View {
-        NavigationLink(destination: TaskDetailView(taskItem: task)) {
-            HStack(spacing: 12) {
-                Button(action: onToggle) {
-                    Image(systemName: task.completed ? "checkmark.circle.fill" : "circle")
-                        .foregroundColor(task.completed ? .green : .secondary)
-                }
-                .buttonStyle(.plain)
-                
-                VStack(alignment: .leading, spacing: 2) {
-                    HStack(spacing: 4) {
-                        if task.isPrivate {
-                            Image(systemName: "lock.fill")
-                                .font(.caption2)
-                                .foregroundColor(Brand.privacy)
-                        }
-                        Text(showPlaceholder ? "🔒 Private Task" : task.title)
+        if isBlurred {
+            Button(action: onTapBlurred) {
+                HStack(spacing: 12) {
+                    Image(systemName: "lock.fill")
+                        .foregroundColor(Brand.privacy)
+                    
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Private Task")
                             .font(.subheadline)
                             .fontWeight(.medium)
-                            .strikethrough(task.completed)
-                            .foregroundColor(task.completed ? .secondary : .primary)
-                            .blur(radius: (task.isPrivate && isPrivacyMode && !hidePrivateTitles) ? 4 : 0)
+                        Text("Authenticate to reveal")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
                     }
                     
-                    Text(task.date.formatted(date: .omitted, time: .shortened))
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
+                    Spacer()
+                    
+                    Image(systemName: BiometricAuthManager.shared.biometricIcon)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
                 }
-                
-                Spacer()
+                .padding(12)
+                .background(Brand.secondarySystemGroupedBackground)
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .stroke(Brand.privacy.opacity(0.2), lineWidth: 0.5)
+                )
             }
-            .padding(12)
-            .background(Brand.secondarySystemGroupedBackground)
-            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .stroke(Color.primary.opacity(0.05), lineWidth: 0.5)
-            )
+            .buttonStyle(.plain)
+        } else {
+            NavigationLink(destination: TaskDetailView(taskItem: task)) {
+                HStack(spacing: 12) {
+                    Button(action: onToggle) {
+                        Image(systemName: task.completed ? "checkmark.circle.fill" : "circle")
+                            .foregroundColor(task.completed ? .green : .secondary)
+                    }
+                    .buttonStyle(.plain)
+                    
+                    VStack(alignment: .leading, spacing: 2) {
+                        HStack(spacing: 4) {
+                            if task.isPrivate {
+                                Image(systemName: "lock.open.fill")
+                                    .font(.caption2)
+                                    .foregroundColor(.green)
+                            }
+                            Text(task.title)
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                                .strikethrough(task.completed)
+                                .foregroundColor(task.completed ? .secondary : .primary)
+                        }
+                        
+                        HStack(spacing: 8) {
+                            Text(task.date.formatted(date: .omitted, time: .shortened))
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                            
+                            // Priority badge
+                            HStack(spacing: 2) {
+                                Image(systemName: task.priority.icon)
+                                    .font(.system(size: 8))
+                                Text(task.priority.displayLabel)
+                                    .font(.system(size: 9, weight: .bold))
+                            }
+                            .foregroundColor(task.priority.color)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 1)
+                            .background(task.priority.color.opacity(0.1))
+                            .clipShape(Capsule())
+                        }
+                    }
+                    
+                    Spacer()
+                }
+                .padding(12)
+                .background(Brand.secondarySystemGroupedBackground)
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .stroke(Color.primary.opacity(0.05), lineWidth: 0.5)
+                )
+            }
+            .buttonStyle(.plain)
         }
-        .buttonStyle(.plain)
     }
 }
 
 #Preview("Full App") {
     MainTabView()
         .environmentObject(TaskStore())
+        .environmentObject(BiometricAuthManager.shared)
 }
-

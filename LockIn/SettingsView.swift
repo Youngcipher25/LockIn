@@ -94,6 +94,12 @@ struct SettingsView: View {
                 } label: {
                     Label("Export Local Database", systemImage: "square.and.arrow.up")
                 }
+                
+                NavigationLink {
+                    SyncView()
+                } label: {
+                    Label("Cloud Sync", systemImage: "icloud.and.arrow.up")
+                }
             }
             
             // MARK: - About
@@ -105,7 +111,7 @@ struct SettingsView: View {
                         .foregroundColor(.secondary)
                 }
             } footer: {
-                Text("LockIn backend uses native UserDefaults and JSON encoding for high-speed local persistence. Your data never leaves this iPhone.")
+                Text("LockIn uses AES-256 encrypted JSON file storage with .completeFileProtection. Your data never leaves this iPhone.")
             }
         }
         .navigationTitle("Settings")
@@ -115,5 +121,6 @@ struct SettingsView: View {
 #Preview("Full App") {
     MainTabView()
         .environmentObject(TaskStore())
+        .environmentObject(BiometricAuthManager.shared)
 }
 

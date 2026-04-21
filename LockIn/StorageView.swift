@@ -1,6 +1,19 @@
 import SwiftUI
 
 struct StorageView: View {
+    @EnvironmentObject var taskStore: TaskStore
+    
+    // Format bytes to human-readable string
+    private func formatBytes(_ bytes: Int64) -> String {
+        if bytes < 1024 {
+            return "\(bytes) B"
+        } else if bytes < 1024 * 1024 {
+            return String(format: "%.1f KB", Double(bytes) / 1024.0)
+        } else {
+            return String(format: "%.1f MB", Double(bytes) / (1024.0 * 1024.0))
+        }
+    }
+    
     var body: some View {
         ZStack {
             Color(.systemGroupedBackground).ignoresSafeArea()
@@ -33,12 +46,13 @@ struct StorageView: View {
                             
                             Divider()
                             
+                            // Dynamic storage metrics using FileManager
                             HStack {
-                                storageMetric(value: "42 KB", label: "App Data")
+                                storageMetric(value: formatBytes(taskStore.dataFileSize), label: "Task Data")
                                 Spacer()
-                                storageMetric(value: "1.2 MB", label: "Media")
+                                storageMetric(value: formatBytes(taskStore.totalDocumentsSize), label: "Total Docs")
                                 Spacer()
-                                storageMetric(value: "None", label: "Cloud Sync")
+                                storageMetric(value: "\(taskStore.tasks.count)", label: "Tasks")
                             }
                         }
                     }
@@ -124,5 +138,6 @@ struct StorageView: View {
 #Preview("Storage") {
     NavigationStack {
         StorageView()
+            .environmentObject(TaskStore())
     }
 }

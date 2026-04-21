@@ -2,27 +2,29 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject var taskStore: TaskStore
+    @EnvironmentObject var bioAuth: BiometricAuthManager
     @State private var selectedFilter: TaskFilter = .today
     @State private var searchText = ""
     @FocusState private var isSearchFocused: Bool
     
     // Privacy Settings
     @AppStorage("isPrivacyModeEnabled") private var isPrivacyModeEnabled = false
-    @AppStorage("hidePrivateTaskTitles") private var hidePrivateTaskTitles = true
 
-    // MARK: - Stats Logic
-    private var todayStats: (completed: Int, total: Int, privacyRatio: Double) {
-        let calendar = Calendar.current
-        let todayTasks = taskStore.tasks.filter { calendar.isDateInToday($0.date) }
-        let completed = todayTasks.filter { $0.completed }.count
-        let privateTasks = todayTasks.filter { $0.isPrivate }.count
-        let ratio = todayTasks.isEmpty ? 0 : Double(privateTasks) / Double(todayTasks.count)
-        return (completed, todayTasks.count, ratio)
+    // MARK: - Dashboard Stats (Functional Doc §5.10)
+    private var dashboardStats: (total: Int, pending: Int, completed: Int) {
+        let total = taskStore.tasks.count
+        let completed = taskStore.tasks.filter { $0.completed }.count
+        let pending = total - completed
+        return (total, pending, completed)
     }
 
     private var focusScore: Int {
-        guard todayStats.total > 0 else { return 0 }
-        return Int((Double(todayStats.completed) / Double(todayStats.total)) * 100)
+        guard dashboardStats.total > 0 else { return 0 }
+        return Int((Double(dashboardStats.completed) / Double(dashboardStats.total)) * 100)
+    }
+    
+    private var privateTaskCount: Int {
+        taskStore.tasks.filter { $0.isPrivate }.count
     }
 
     private var filteredTasks: [TaskItem] {
@@ -64,6 +66,12 @@ struct HomeView: View {
                 VStack(alignment: .leading, spacing: 20) {
                     headerSection
                     statsSection
+                    
+                    // Private tasks unlock banner
+                    if privateTaskCount > 0 && bioAuth.requireBiometricForPrivate {
+                        privateBanner
+                    }
+                    
                     searchSection
                     filterSection
                 }
@@ -84,9 +92,13 @@ struct HomeView: View {
                             ForEach(filteredTasks) { task in
                                 TaskCardView(
                                     task: task,
-                                    isPrivacyMode: isPrivacyModeEnabled,
-                                    hidePrivateTitles: hidePrivateTaskTitles, // This parameter is still passed but its effect on title masking is removed in TaskCardView
+                                    isBlurred: bioAuth.shouldBlurTask(task),
                                     onToggle: {
+                                        // Don't allow toggling blurred tasks
+                                        if bioAuth.shouldBlurTask(task) {
+                                            bioAuth.authenticate { _ in }
+                                            return
+                                        }
                                         HapticManager.impact(.light)
                                         withAnimation(.spring(response: 0.35, dampingFraction: 0.7)) {
                                             taskStore.toggle(task)
@@ -95,6 +107,9 @@ struct HomeView: View {
                                     onDelete: {
                                         HapticManager.notification(.warning)
                                         withAnimation { taskStore.delete(task) }
+                                    },
+                                    onTapBlurred: {
+                                        bioAuth.authenticate { _ in }
                                     }
                                 )
                                 .transition(.asymmetric(
@@ -166,7 +181,7 @@ struct HomeView: View {
         .padding(.top, 12)
     }
 
-    // MARK: - Stats Section
+    // MARK: - Stats Section (Functional Doc §5.10 — total, pending, completed)
     private var statsSection: some View {
         LockInCard {
             HStack(spacing: 20) {
@@ -175,23 +190,30 @@ struct HomeView: View {
                     .frame(width: 80, height: 80)
                 
                 VStack(alignment: .leading, spacing: 16) {
-                    HStack(spacing: 30) {
+                    HStack(spacing: 20) {
                         statItem(
-                            title: "Task Flow",
-                            value: "\(todayStats.completed)/\(todayStats.total)",
-                            icon: "sparkles",
+                            title: "Total",
+                            value: "\(dashboardStats.total)",
+                            icon: "list.bullet.circle.fill",
+                            color: Brand.primary
+                        )
+                        
+                        statItem(
+                            title: "Pending",
+                            value: "\(dashboardStats.pending)",
+                            icon: "clock.fill",
                             color: .orange
                         )
                         
                         statItem(
-                            title: "Privacy Hub",
-                            value: "\(Int(todayStats.privacyRatio * 100))%",
-                            icon: "lock.shield.fill",
-                            color: Brand.privacy
+                            title: "Done",
+                            value: "\(dashboardStats.completed)",
+                            icon: "checkmark.circle.fill",
+                            color: .green
                         )
                     }
                     
-                    Text("Today's Focus Score is \(focusScore)%")
+                    Text("Focus Score: \(focusScore)%")
                         .font(.caption)
                         .fontWeight(.bold)
                         .foregroundColor(Brand.primary)
@@ -201,6 +223,48 @@ struct HomeView: View {
             }
             .padding(.vertical, 4)
         }
+    }
+    
+    // MARK: - Private Tasks Banner
+    private var privateBanner: some View {
+        Button {
+            if bioAuth.isPrivateContentRevealed {
+                bioAuth.lockPrivateContent()
+            } else {
+                bioAuth.authenticate { _ in }
+            }
+        } label: {
+            LockInCard(backgroundColor: bioAuth.isPrivateContentRevealed ? Color.green.opacity(0.05) : Brand.privacy.opacity(0.08)) {
+                HStack(spacing: 12) {
+                    Image(systemName: bioAuth.isPrivateContentRevealed ? "lock.open.fill" : bioAuth.biometricIcon)
+                        .font(.title3)
+                        .foregroundColor(bioAuth.isPrivateContentRevealed ? .green : Brand.privacy)
+                        .frame(width: 40, height: 40)
+                        .background(
+                            Circle()
+                                .fill(bioAuth.isPrivateContentRevealed ? Color.green.opacity(0.1) : Brand.privacy.opacity(0.15))
+                        )
+                    
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(bioAuth.isPrivateContentRevealed ? "Private Tasks Visible" : "\(privateTaskCount) Private Task\(privateTaskCount == 1 ? "" : "s") Hidden")
+                            .font(.subheadline)
+                            .fontWeight(.bold)
+                            .foregroundColor(.primary)
+                        
+                        Text(bioAuth.isPrivateContentRevealed ? "Tap to lock again" : "Tap to unlock with \(bioAuth.biometricLabel)")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    Spacer()
+                    
+                    Image(systemName: bioAuth.isPrivateContentRevealed ? "lock.fill" : "chevron.right")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+        }
+        .buttonStyle(.plain)
     }
 
     private func statItem(title: String, value: String, icon: String, color: Color) -> some View {
@@ -302,6 +366,7 @@ struct HomeView: View {
     }
 
     private var emptyStateIcon: String {
+        if !searchText.isEmpty { return "magnifyingglass" }
         switch selectedFilter {
         case .today: return "checkmark.seal.fill"
         case .upcoming: return "calendar.badge.plus"
@@ -310,6 +375,7 @@ struct HomeView: View {
     }
 
     private var emptyStateTitle: String {
+        if !searchText.isEmpty { return "No Results" }
         switch selectedFilter {
         case .today: return "All Caught Up"
         case .upcoming: return "Clear Skies"
@@ -317,7 +383,9 @@ struct HomeView: View {
         }
     }
 
+    // Functional Doc §5.11, AC4: "No tasks match your search."
     private var emptyStateMessage: String {
+        if !searchText.isEmpty { return "No tasks match your search." }
         switch selectedFilter {
         case .today: return "You've completed everything scheduled for today. Time to relax."
         case .upcoming: return "No upcoming tasks in your schedule. Enjoy the quiet."
@@ -334,17 +402,60 @@ private enum TaskFilter: String, CaseIterable {
 // MARK: - Task Card View
 private struct TaskCardView: View {
     let task: TaskItem
-    let isPrivacyMode: Bool
-    let hidePrivateTitles: Bool
+    let isBlurred: Bool
     let onToggle: () -> Void
     let onDelete: () -> Void
-    
-    var showPlaceholder: Bool {
-        // No longer masking inside the app, but keeping this logic for the lock icon visibility
-        task.isPrivate
-    }
+    let onTapBlurred: () -> Void
 
     var body: some View {
+        Group {
+            if isBlurred {
+                blurredCard
+            } else {
+                normalCard
+            }
+        }
+    }
+    
+    // MARK: - Blurred (Locked) Card
+    private var blurredCard: some View {
+        Button(action: onTapBlurred) {
+            LockInCard {
+                HStack(spacing: 16) {
+                    Image(systemName: "lock.fill")
+                        .font(.title2)
+                        .foregroundColor(Brand.privacy)
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "lock.fill")
+                                .font(.caption2)
+                                .foregroundColor(Brand.privacy)
+                            
+                            Text("Private Task")
+                                .font(.body)
+                                .fontWeight(.semibold)
+                                .foregroundColor(.primary)
+                        }
+                        
+                        Text("Tap to authenticate and reveal")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    Spacer()
+                    
+                    Image(systemName: BiometricAuthManager.shared.biometricIcon)
+                        .font(.title3)
+                        .foregroundColor(Brand.privacy.opacity(0.6))
+                }
+            }
+        }
+        .buttonStyle(.plain)
+    }
+    
+    // MARK: - Normal (Visible) Card
+    private var normalCard: some View {
         NavigationLink(destination: TaskDetailView(taskItem: task)) {
             LockInCard {
                 HStack(spacing: 16) {
@@ -358,9 +469,9 @@ private struct TaskCardView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         HStack(spacing: 6) {
                             if task.isPrivate {
-                                Image(systemName: "lock.fill")
+                                Image(systemName: "lock.open.fill")
                                     .font(.caption2)
-                                    .foregroundColor(Brand.privacy)
+                                    .foregroundColor(.green)
                             }
                             
                             Text(task.title)
@@ -370,13 +481,28 @@ private struct TaskCardView: View {
                                 .foregroundStyle(task.completed ? .secondary : .primary)
                         }
 
-                        HStack(spacing: 6) {
-                            Image(systemName: "calendar")
-                                .font(.caption2)
-                            Text(task.date.formatted(date: .abbreviated, time: .shortened))
-                                .font(.caption)
+                        HStack(spacing: 10) {
+                            HStack(spacing: 4) {
+                                Image(systemName: "calendar")
+                                    .font(.caption2)
+                                Text(task.date.formatted(date: .abbreviated, time: .shortened))
+                                    .font(.caption)
+                            }
+                            .foregroundStyle(.secondary)
+                            
+                            // Priority badge
+                            HStack(spacing: 3) {
+                                Image(systemName: task.priority.icon)
+                                    .font(.system(size: 9))
+                                Text(task.priority.displayLabel)
+                                    .font(.system(size: 10, weight: .bold))
+                            }
+                            .foregroundColor(task.priority.color)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(task.priority.color.opacity(0.1))
+                            .clipShape(Capsule())
                         }
-                        .foregroundStyle(.secondary)
                     }
 
                     Spacer()
@@ -404,6 +530,7 @@ private struct TaskCardView: View {
 #Preview("Full App") {
     MainTabView()
         .environmentObject(TaskStore())
+        .environmentObject(BiometricAuthManager.shared)
 }
 
 // MARK: - Components

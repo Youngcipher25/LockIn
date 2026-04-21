@@ -1,5 +1,3 @@
+// Deprecated: Main entry point moved to PrivateOrganizerApp.swift
+// Safe to remove from the Xcode project navigator.
 import SwiftUI
-
-// This file is maintained for project compatibility.
-// The main entry point has been moved to PrivateOrganizerApp.swift
-struct LockInApp_Deprecated { }

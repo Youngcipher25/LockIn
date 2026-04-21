@@ -9,6 +9,7 @@ struct PrivateOrganizerApp: App {
         WindowGroup {
             AppRootView()
                 .environmentObject(taskStore)
+                .environmentObject(BiometricAuthManager.shared)
                 .preferredColorScheme(isDarkMode ? .dark : .light)
                 .onAppear {
                     NotificationManager.shared.requestAuthorization()
@@ -21,20 +22,16 @@ struct AppRootView: View {
     @EnvironmentObject var taskStore: TaskStore
     @AppStorage("isAuthenticated") private var isAuthenticated = false
     @AppStorage("darkMode") private var isDarkMode = false
-    @State private var isUnlocked = false
 
     var body: some View {
         ZStack {
             if !isAuthenticated {
                 LoginView()
-            } else if !isUnlocked {
-                AppLockView(isUnlocked: $isUnlocked)
             } else {
                 MainTabView()
             }
         }
         .animation(.spring(), value: isAuthenticated)
-        .animation(.spring(), value: isUnlocked)
     }
 }
 

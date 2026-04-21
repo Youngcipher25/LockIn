@@ -1,2 +1,3 @@
-// This file is safe to delete from Xcode.
-// I have emptyed it to avoid naming conflicts with TaskDetailView.swift.
+// Deprecated: Duplicate of TaskDetailView.swift
+// Safe to remove from the Xcode project navigator.
+import SwiftUI
