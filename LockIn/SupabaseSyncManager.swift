@@ -8,11 +8,11 @@ struct SupabaseTask: Codable {
     let user_id: String?
     let title: String
     let date: String // ISO8601
-    let priority: String
+    let priority: Int // Changed to Int to match Android (0, 1, 2)
     let notes: String?
-    let completed: Bool
+    let isCompleted: Bool // Changed to match Android
     let created_at: String // ISO8601
-    let is_private: Bool
+    let isPrivate: Bool // Changed to match Android
 }
 
 // MARK: - Supabase Sync Manager
@@ -136,16 +136,24 @@ final class SupabaseSyncManager: ObservableObject {
             // Upload all current tasks
             if !tasks.isEmpty {
                 let supabaseTasks = tasks.map { task in
-                    SupabaseTask(
+                    // Map priority to integer: low=0, medium=1, high=2
+                    let priorityInt: Int
+                    switch task.priority {
+                    case .low: priorityInt = 0
+                    case .medium: priorityInt = 1
+                    case .high: priorityInt = 2
+                    }
+                    
+                    return SupabaseTask(
                         id: task.id.uuidString,
                         user_id: userId,
                         title: task.title,
                         date: iso8601.string(from: task.date),
-                        priority: task.priority.rawValue,
+                        priority: priorityInt,
                         notes: task.notes,
-                        completed: task.completed,
+                        isCompleted: task.completed,
                         created_at: iso8601.string(from: task.createdAt),
-                        is_private: task.isPrivate
+                        isPrivate: task.isPrivate
                     )
                 }
                 
@@ -192,7 +200,14 @@ final class SupabaseSyncManager: ObservableObject {
             let tasks = response.compactMap { st -> TaskItem? in
                 guard let date = iso8601.date(from: st.date) else { return nil }
                 let createdAt = iso8601.date(from: st.created_at) ?? Date()
-                let priority = Priority(rawValue: st.priority) ?? .medium
+                
+                // Map integer back to priority enum: 0=low, 1=medium, 2=high
+                let priority: Priority
+                switch st.priority {
+                case 0: priority = .low
+                case 2: priority = .high
+                default: priority = .medium
+                }
                 
                 return TaskItem(
                     id: UUID(uuidString: st.id) ?? UUID(),
@@ -200,9 +215,9 @@ final class SupabaseSyncManager: ObservableObject {
                     date: date,
                     priority: priority,
                     notes: st.notes,
-                    completed: st.completed,
+                    completed: st.isCompleted,
                     createdAt: createdAt,
-                    isPrivate: st.is_private
+                    isPrivate: st.isPrivate
                 )
             }
             
@@ -274,8 +289,8 @@ final class SupabaseSyncManager: ObservableObject {
             let expiresAt = iso8601.string(from: Date().addingTimeInterval(15 * 60))
             
             let payload: [String: String] = [
-                "code": code,
-                "data": jsonString,
+                "sync_code": code,
+                "payload": jsonString,
                 "expires_at": expiresAt
             ]
             
@@ -301,11 +316,11 @@ final class SupabaseSyncManager: ObservableObject {
             // 1. Fetch the data
             let result: [[String: String]] = try await client.from("sync_sessions")
                 .select()
-                .eq("code", value: code)
+                .eq("sync_code", value: code)
                 .execute()
                 .value
             
-            guard let record = result.first, let jsonString = record["data"] else {
+            guard let record = result.first, let jsonString = record["payload"] else {
                 transferLoading = false
                 errorMessage = "Invalid or expired code."
                 throw NSError(domain: "Sync", code: 404, userInfo: [NSLocalizedDescriptionKey: "Invalid or expired code."])
@@ -323,7 +338,7 @@ final class SupabaseSyncManager: ObservableObject {
             // 3. Delete the record (One-time use)
             try await client.from("sync_sessions")
                 .delete()
-                .eq("code", value: code)
+                .eq("sync_code", value: code)
                 .execute()
             
             transferLoading = false
