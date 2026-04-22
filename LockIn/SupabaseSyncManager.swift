@@ -265,11 +265,6 @@ final class SupabaseSyncManager: ObservableObject {
     
     // MARK: - Quick Transfer (One-time Code)
     
-    struct TransferSyncData: Codable {
-        let tasks: [TaskItem]
-        let timestamp: Date
-    }
-    
     @Published var activeTransferCode: String?
     @Published var transferLoading = false
     
@@ -279,10 +274,9 @@ final class SupabaseSyncManager: ObservableObject {
         
         do {
             let code = String(format: "%06d", Int.random(in: 0...999999))
-            let syncData = TransferSyncData(tasks: tasks, timestamp: Date())
             let encoder = JSONEncoder()
             encoder.dateEncodingStrategy = .iso8601
-            let jsonData = try encoder.encode(syncData)
+            let jsonData = try encoder.encode(tasks)
             let jsonString = String(data: jsonData, encoding: .utf8) ?? ""
             
             // Set expiration to 15 minutes from now
@@ -333,7 +327,7 @@ final class SupabaseSyncManager: ObservableObject {
                 throw NSError(domain: "Sync", code: 500, userInfo: [NSLocalizedDescriptionKey: "Data corruption error."])
             }
             
-            let syncData = try decoder.decode(TransferSyncData.self, from: jsonData)
+            let tasks = try decoder.decode([TaskItem].self, from: jsonData)
             
             // 3. Delete the record (One-time use)
             try await client.from("sync_sessions")
@@ -342,8 +336,8 @@ final class SupabaseSyncManager: ObservableObject {
                 .execute()
             
             transferLoading = false
-            syncStatus = "Restored \(syncData.tasks.count) tasks!"
-            return syncData.tasks
+            syncStatus = "Restored \(tasks.count) tasks!"
+            return tasks
         } catch {
             transferLoading = false
             errorMessage = "Restore failed: \(error.localizedDescription)"
