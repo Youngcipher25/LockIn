@@ -279,7 +279,7 @@ final class SupabaseSyncManager: ObservableObject {
                 "expires_at": expiresAt
             ]
             
-            try await client.from("sync_transfers")
+            try await client.from("sync_sessions")
                 .insert(payload)
                 .execute()
             
@@ -299,7 +299,7 @@ final class SupabaseSyncManager: ObservableObject {
         
         do {
             // 1. Fetch the data
-            let result: [[String: String]] = try await client.from("sync_transfers")
+            let result: [[String: String]] = try await client.from("sync_sessions")
                 .select()
                 .eq("code", value: code)
                 .execute()
@@ -321,7 +321,7 @@ final class SupabaseSyncManager: ObservableObject {
             let syncData = try decoder.decode(TransferSyncData.self, from: jsonData)
             
             // 3. Delete the record (One-time use)
-            try await client.from("sync_transfers")
+            try await client.from("sync_sessions")
                 .delete()
                 .eq("code", value: code)
                 .execute()
