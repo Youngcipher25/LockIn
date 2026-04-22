@@ -3,13 +3,17 @@ import SwiftUI
 import UserNotifications
 
 // MARK: - Priority Enum (Architecture Doc §2.2)
-enum Priority: String, Codable, CaseIterable, Comparable {
-    case low
-    case medium
-    case high
+enum Priority: Int, Codable, CaseIterable, Comparable {
+    case low = 0
+    case medium = 1
+    case high = 2
     
     var displayLabel: String {
-        rawValue.capitalized
+        switch self {
+        case .low: return "Low"
+        case .medium: return "Medium"
+        case .high: return "High"
+        }
     }
     
     var color: Color {
@@ -54,7 +58,7 @@ struct TaskItem: Identifiable, Hashable, Codable {
     
     // Backward-compatible decoding: old tasks without priority/notes/createdAt still load
     enum CodingKeys: String, CodingKey {
-        case id, title, date, priority, notes, completed, createdAt, isPrivate
+        case id, title, date, priority, notes, isCompleted, createdAt, isPrivate
     }
     
     init(id: UUID = UUID(), title: String, date: Date, priority: Priority = .medium, notes: String? = nil, completed: Bool = false, createdAt: Date = Date(), isPrivate: Bool = false) {
@@ -75,9 +79,21 @@ struct TaskItem: Identifiable, Hashable, Codable {
         date = try container.decode(Date.self, forKey: .date)
         priority = try container.decodeIfPresent(Priority.self, forKey: .priority) ?? .medium
         notes = try container.decodeIfPresent(String.self, forKey: .notes)
-        completed = try container.decodeIfPresent(Bool.self, forKey: .completed) ?? false
+        completed = try container.decodeIfPresent(Bool.self, forKey: .isCompleted) ?? false
         createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt) ?? Date()
         isPrivate = try container.decodeIfPresent(Bool.self, forKey: .isPrivate) ?? false
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(title, forKey: .title)
+        try container.encode(date, forKey: .date)
+        try container.encode(priority, forKey: .priority)
+        try container.encode(notes, forKey: .notes)
+        try container.encode(completed, forKey: .isCompleted)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encode(isPrivate, forKey: .isPrivate)
     }
 }
 
